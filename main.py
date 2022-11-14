@@ -289,17 +289,16 @@ def GOST(message, key):
     m = 0
     for i in range(len(R0), 0, -1):
         check = int(R0[i - 1]) + int(X0[i - 1])
-        if check + m >= 2:
-            if check + m == 2:
-                res += "0"
-            elif check + m > 2:
-                res += "1"
+        if check + m < 2:
+            if check < 1:
+                res += str(m)
+                m = 0
             else:
-                res += "0"
-            m = 1
+                res += str(check)
+                m = 0
         else:
-            res += str(check + m)
-            m = 0
+            res += bin(check + m)[3:]
+            m = 1
     res = ''.join(reversed(res))
     print(' '.join([res[i:i + 4] for i in range(0, len(res), 4)]))
     print("2.Перестановка:")
