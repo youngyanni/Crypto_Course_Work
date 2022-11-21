@@ -1,5 +1,5 @@
 # Задание №1 DES
-# ЧЕРНЫШЯН ЮРЬЕВИЧ
+# ЧЕРНЫШ Я ЮРЬЕВИЧ
 # 1101 0111 1100 0101 1101 0000 1100 1101
 # 1101 1011 1101 1000 1101 1111 1100 1101
 # После перестановки
@@ -38,7 +38,7 @@
 # 1111111100000000111110000101000100101000001110011010010110111111
 # 01101011 01000010 01001010 11100110 01100111 11101110 01000101 01001110
 Permutation_1 = [58, 50, 42, 34, 26, 18, 10, 2,
-                 60, 52, 44, 26, 28, 20, 12, 4,
+                 60, 52, 44, 36, 28, 20, 12, 4,
                  62, 54, 46, 38, 30, 22, 14, 6,
                  64, 56, 48, 40, 32, 24, 16, 8,
                  57, 49, 41, 33, 25, 17, 9, 1,
@@ -95,7 +95,7 @@ S8 = [[13, 2, 8, 4, 6, 15, 11, 1, 10, 9, 3, 14, 5, 0, 12, 7],
       [2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11]]
 
 P_block = [16, 7, 20, 21, 29, 12, 28, 17,
-           1, 15, 23, 2, 5, 18, 31, 10,
+           1, 15, 23, 26, 5, 18, 31, 10,
            2, 8, 24, 14, 32, 27, 3, 9,
            19, 13, 30, 6, 22, 11, 4, 25]
 
@@ -142,10 +142,22 @@ dictonary_2 = {1: "А", 2: "Б", 3: "В", 4: "Г", 5: "Д", 6: "Е",
 def DES(message, key):
     result = ""
     for i in list(message.encode('cp1251')):
-        result += bin(i)[2:]
+        letter = str(bin(i)[2:])
+        if len(letter) != 8:
+            while len(letter) != 8:
+                letter = "0" + letter
+            result += letter
+        else:
+            result += letter
     KEY = ""
     for i in list(key.encode('cp1251')):
-        KEY += bin(i)[2:]
+        letter_key = str(bin(i)[2:])
+        if len(letter_key) != 8:
+            while len(letter_key) != 8:
+                letter_key = "0" + letter_key
+            KEY += letter_key
+        else:
+            KEY += letter_key
     print("1.Двоичный вид сообщения:")
     print(' '.join([result[i:i + 4] for i in range(0, len(result), 4)]))
     Permutation_result = ""
@@ -163,8 +175,7 @@ def DES(message, key):
     for i in Permutation_2:
         R0_Advanced += R0[i - 1]
     print(' '.join([R0_Advanced[i:i + 6] for i in range(0, len(R0_Advanced), 6)]))
-    print("5.Выбираем 56-битный ключ (Отчество) с битами проверки (всего 64 бит) и генерируем 48-битный ключ раунда:",
-          'ЮРЬЕВИЧЯ', sep='\n')
+    print("5.Выбираем 56-битный ключ (Отчество) с битами проверки (всего 64 бит) и генерируем 48-битный ключ раунда:'" + f'{key}'+"'")
     print(' '.join([KEY[i:i + 8] for i in range(0, len(KEY), 8)]))
     print("Вычеркиваем каждый восьмой бит в блоках и получим фактический ключ шифра длиной в 56 бит:")
     KEY_split = ''.join(KEY.split())
@@ -271,11 +282,17 @@ def GOST(message, key):
     print("Перевод исходных данных:")
     message_bin = ""
     for i in list(message.encode('cp1251')):
-        message_bin += bin(i)[2:]
-    R0 = ' '.join([message_bin[32:64][i:i + 4] for i in range(0, len(message_bin[32:64]), 4)])
-    print(R0 + "-R0")
+        letter = str(bin(i)[2:])
+        if len(letter) != 8:
+            while len(letter) != 8:
+                letter = "0" + letter
+            message_bin += letter
+        else:
+            message_bin += letter
     L0 = ' '.join([message_bin[:32][i:i + 4] for i in range(0, len(message_bin[:32]), 4)])
     print(L0 + "-L0")
+    R0 = ' '.join([message_bin[32:64][i:i + 4] for i in range(0, len(message_bin[32:64]), 4)])
+    print(R0 + "-R0")
     key_bin = ""
     print("Первый подключ X0:")
     for i in list(key[:4].upper().encode('cp1251')):
@@ -412,8 +429,9 @@ def HASH(SN, p, q, H0):
     print("Хэш-образ " + f'{SN}' + "-" + str(H[len(H)-1]))
     return H
 
+
 def DigitalSignature(HASH, p, q, d):
-    print("Полученные ранне хэш-образ ссобщения: " + str(HASH))
+    print("Полученные ранне хэш-образ сообщения: " + str(HASH))
     n = p * q
     print("n = " + str(n))
     f = (p-1)*(q-1)
@@ -434,10 +452,10 @@ def DigitalSignature(HASH, p, q, d):
 
 if __name__ == '__main__':
     print("Задание №1 Алгоритм шифрования DES")
-    DES('ЧЕРНЫШЯН', 'ЮРЬЕВИЧЯ')
+    DES('ЧЕРНЫШ Я', 'ЮРЬЕВИЧ ')
     print("-----------------------------------------------------------------------------------------------------")
     print("Задание №2 Алгоритм шифрования ГОСТ 28147-89")
-    GOST('ЧЕРНЫШЯН', 'Юрьевич')
+    GOST('ЧЕРНЫШ Я', 'ЮРЬЕвич')
     print("-----------------------------------------------------------------------------------------------------")
     print("Задание №3 Алгоритм шифрования RSA")
     RSA("ЧЯЮ", 89, 13, 283)
@@ -447,4 +465,6 @@ if __name__ == '__main__':
     print("-----------------------------------------------------------------------------------------------------")
     print("Задание №5 Электронная цифровая подпись")
     DigitalSignature(H[len(H)-1], 89, 13, 239)
+
+
 
